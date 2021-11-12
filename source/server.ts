@@ -2,8 +2,17 @@ import http from 'http';
 import express, { Express } from 'express';
 import morgan from 'morgan';
 import userRoutes from './routes/UserRoutes';
+import config from './config/config';
+import mongoose, { ConnectOptions } from 'mongoose';
 
 const router: Express = express();
+
+mongoose.connect(config.mongo.url, config.mongo.options as ConnectOptions)
+    .then((result) => {
+        console.log('DB connected');
+    }).catch((err) => {
+        console.log(err);
+    })
 
 router.use(morgan('dev'));
 router.use(express.urlencoded({ extended: false }));
@@ -29,5 +38,5 @@ router.use((req, res, next) => {
 });
 
 const httpServer = http.createServer(router);
-const PORT: any = process.env.PORT ?? 8000;
+const PORT: any = config.server.port ?? 6000;
 httpServer.listen(PORT, () => console.log(`The server is running on port ${PORT}`));
