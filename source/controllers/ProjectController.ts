@@ -25,17 +25,39 @@ const newProject = (req: Request, res: Response, next: NextFunction) => {
     return project
         .save()
         .then((result) => {
-            res.status(201).json({
+            return res.status(201).json({
                 success: true,
                 message: "Created new project"
             })
         })
         .catch((err) => {
-            res.status(500).json({
+            return res.status(500).json({
                 message: err.message,
                 err
             })
         })
 }
 
-export default { getProjects, newProject }
+const editProject = (req: Request, res: Response, next: NextFunction) => {
+    const { title, description, date, mainImage } = req.body;
+    const id = req.params.id;
+
+    Project.updateOne({ _id: id } ,{ title, description, date, mainImage })
+        .then((result) => {
+            let count = result.matchedCount;
+            if(count == 0) return res.json({ success: false, message: "Project doesnt exists" });
+
+            return res.status(200).json({
+                success: true,
+                message: "Updated!"
+            })
+        })
+        .catch((err) => {
+            return res.status(500).json({
+                success: false,
+                err
+            })
+        })
+}
+
+export default { getProjects, newProject, editProject }
