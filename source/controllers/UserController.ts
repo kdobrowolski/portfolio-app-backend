@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import User from '../models/User';
 import mongoose from 'mongoose';
+import jwt, { Secret } from 'jsonwebtoken';
+import config from '../config/config';
 
 const signIn = (req: Request, res: Response, next: NextFunction) => {
     const { login, password } = req.body;
@@ -15,7 +17,17 @@ const signIn = (req: Request, res: Response, next: NextFunction) => {
         user.comparePassword(password, (err: any, isMatch: boolean) => {
             if(err) return res.json({ err });
 
-            if(isMatch) return res.status(200).json({ success: isMatch, user });
+            if(isMatch) {
+                const token = jwt.sign({
+                    user_id: user._id, login
+                }, config.token as Secret,
+                {
+                    expiresIn: "1h"
+                })
+
+
+                return res.status(200).json({ success: isMatch, user , token: token});
+            }
 
             return res.json({ success: isMatch, message: "Wrong login or password" });
         })

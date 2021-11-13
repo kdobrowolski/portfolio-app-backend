@@ -15,6 +15,8 @@ const MONGO = {
 const SERVER_HOSTNAME = process.env.HOSTNAME || 'localhost';
 const SERVER_PORT = process.env.PORT || 6000;
 
+const TOKEN_KEY = process.env.TOKEN_KEY;
+
 const SERVER = {
     hostname: SERVER_HOSTNAME,
     port: SERVER_PORT
@@ -22,7 +24,8 @@ const SERVER = {
 
 const config = {
     mongo: MONGO,
-    server: SERVER
+    server: SERVER,
+    token: TOKEN_KEY
 }
 
 export default config;
