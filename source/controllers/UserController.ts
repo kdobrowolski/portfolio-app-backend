@@ -8,14 +8,14 @@ const signIn = (req: Request, res: Response, next: NextFunction) => {
     const { login, password } = req.body;
 
     User.findOne({login: login}, (err: any, user: any) => {
-        if(err) return res.json({ err });
+        if(err) return res.status(500).json({ err });
 
         if(!user) {
             return res.json({ message: "User doesnt exists", success: false});
         }
 
         user.comparePassword(password, (err: any, isMatch: boolean) => {
-            if(err) return res.json({ err });
+            if(err) return res.status(500).json({ err });
 
             if(isMatch) {
                 const token = jwt.sign({
@@ -62,7 +62,7 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
     return user
         .save()
         .then((result) => {
-            res.status(200).json({
+            res.status(201).json({
                 user: result
             })
         })

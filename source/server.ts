@@ -2,6 +2,7 @@ import http from 'http';
 import express, { Express } from 'express';
 import morgan from 'morgan';
 import userRoutes from './routes/UserRoutes';
+import projectRoutes from './routes/ProjectRoutes';
 import config from './config/config';
 import mongoose, { ConnectOptions } from 'mongoose';
 
@@ -29,6 +30,7 @@ router.use((req, res, next) => {
 });
 
 router.use('/api/user', userRoutes);
+router.use('/api/projects', projectRoutes);
 
 router.use((req, res, next) => {
     const error = new Error('not found');
