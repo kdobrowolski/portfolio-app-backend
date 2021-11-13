@@ -60,4 +60,23 @@ const editProject = (req: Request, res: Response, next: NextFunction) => {
         })
 }
 
-export default { getProjects, newProject, editProject }
+const deleteProject = (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id;
+
+    Project.findOneAndRemove({ _id: id })
+        .then((result) => {
+            if(result == null) return res.json({ success: false, message: "Project doesnt exists" });
+            res.status(200).json({
+                success: true,
+                message: "Deleted!"
+            })
+        })
+        .catch((err) => {
+            res.status(500).json({
+                success: false,
+                err
+            })
+        })
+}
+
+export default { getProjects, newProject, editProject, deleteProject }
