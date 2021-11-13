@@ -3,7 +3,23 @@ import User from '../models/User';
 import mongoose from 'mongoose';
 
 const signIn = (req: Request, res: Response, next: NextFunction) => {
-    return res.status(200).json({"success": true});
+    const { login, password } = req.body;
+
+    User.findOne({login: login}, (err: any, user: any) => {
+        if(err) return res.json({ err });
+
+        if(!user) {
+            return res.json({ message: "User doesnt exists", success: false});
+        }
+
+        user.comparePassword(password, (err: any, isMatch: boolean) => {
+            if(err) return res.json({ err });
+
+            if(isMatch) return res.status(200).json({ success: isMatch, user });
+
+            return res.json({ success: isMatch, message: "Wrong login or password" });
+        })
+    })
 }
 
 const register = async (req: Request, res: Response, next: NextFunction) => {
