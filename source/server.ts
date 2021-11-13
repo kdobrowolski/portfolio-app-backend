@@ -15,7 +15,7 @@ mongoose.connect(config.mongo.url, config.mongo.options as ConnectOptions)
     })
 
 router.use(morgan('dev'));
-router.use(express.urlencoded({ extended: false }));
+router.use(express.urlencoded({ extended: true }));
 router.use(express.json());
 
 router.use((req, res, next) => {
