@@ -79,4 +79,22 @@ const deleteProject = (req: Request, res: Response, next: NextFunction) => {
         })
 }
 
-export default { getProjects, newProject, editProject, deleteProject }
+const getImages = (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id;
+
+    Project.findOne({ _id: id })
+        .then((result) => {
+            if(result == null) return res.status(500).json({ success: false, message: "object is null" });
+            res.json({
+                images: result.images
+            })
+        })
+        .catch((err) => {
+            res.status(500).json({
+                success: false,
+                err
+            })
+        })
+}
+
+export default { getProjects, newProject, editProject, deleteProject, getImages }

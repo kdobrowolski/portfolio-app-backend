@@ -29,7 +29,7 @@ const signIn = (req: Request, res: Response, next: NextFunction) => {
                 return res.status(200).json({ success: isMatch, user , token: token});
             }
 
-            return res.json({ success: isMatch, message: "Wrong login or password" });
+            return res.json({ success: isMatch, message: "Wrong password" });
         })
     })
 }

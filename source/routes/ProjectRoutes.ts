@@ -8,4 +8,6 @@ router.post('/', controller.newProject);
 router.put('/:id', controller.editProject);
 router.delete('/:id', controller.deleteProject);
 
+router.get('/:id/images', controller.getImages);
+
 export default router;
