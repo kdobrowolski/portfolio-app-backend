@@ -10,5 +10,6 @@ router.delete('/:id', controller.deleteProject);
 
 router.get('/:id/images', controller.getImages);
 router.post('/:id/images', controller.addImage);
+router.delete('/:id/images/:imageid', controller.deleteImage);
 
 export default router;

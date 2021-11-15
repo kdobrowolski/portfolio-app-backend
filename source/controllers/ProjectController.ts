@@ -109,7 +109,6 @@ const addImage = (req: Request, res: Response, next: NextFunction) => {
             return res.status(200).json({
                 success: true,
                 message: "Added image!",
-                result
             })
         })
         .catch((err) => {
@@ -121,4 +120,25 @@ const addImage = (req: Request, res: Response, next: NextFunction) => {
 
 }
 
-export default { getProjects, newProject, editProject, deleteProject, getImages, addImage }
+const deleteImage = (req: Request, res: Response, next: NextFunction) => {
+    const projectID = req.params.id;
+    const imageID = req.params.imageid;
+
+    Project.updateOne({ _id: projectID }, { $pull: { images: { _id: imageID } } })
+        .then((result) => {
+            if(result.modifiedCount == 0) return res.json({ success: false, message: "image doesnt exists" });
+            return res.status(200).json({
+                success: true,
+                message: "Deleted image!",
+                result
+            })
+        })
+        .catch((err) => {
+            return res.status(500).json({
+                success: false,
+                err
+            })
+        })
+}
+
+export default { getProjects, newProject, editProject, deleteProject, getImages, addImage, deleteImage }
