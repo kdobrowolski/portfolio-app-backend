@@ -85,16 +85,40 @@ const getImages = (req: Request, res: Response, next: NextFunction) => {
     Project.findOne({ _id: id })
         .then((result) => {
             if(result == null) return res.status(500).json({ success: false, message: "object is null" });
-            res.json({
+            return res.json({
                 images: result.images
             })
         })
         .catch((err) => {
-            res.status(500).json({
+            return res.status(500).json({
                 success: false,
                 err
             })
         })
 }
 
-export default { getProjects, newProject, editProject, deleteProject, getImages }
+const addImage = (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id;
+    const { imageUrl } = req.body;
+
+    if(imageUrl == undefined || null) return res.status(500).json({ message: "image url is null or undefined", success: false })
+    if(imageUrl == "") return res.status(500).json({ message: "image url is empty", success: false })
+
+    Project.updateOne({ _id: id }, {$push: { images: { imageUrl: imageUrl } }})
+        .then((result) => {
+            return res.status(200).json({
+                success: true,
+                message: "Added image!",
+                result
+            })
+        })
+        .catch((err) => {
+            return res.status(500).json({
+                success: false,
+                err
+            })
+        })
+
+}
+
+export default { getProjects, newProject, editProject, deleteProject, getImages, addImage }

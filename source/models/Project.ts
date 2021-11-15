@@ -1,12 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 import IProject from '../intefaces/Project';
 
-const ImageSchema: Schema = new Schema({
-    image: {
-        type: String
-    }
-})
-
 const ProjectSchema: Schema = new Schema({
     title: {
         type: String,
@@ -25,7 +19,9 @@ const ProjectSchema: Schema = new Schema({
         required: true
     },
     images: [
-        ImageSchema
+        {
+            imageUrl: String
+        }
     ]
 }, { collection: "projects" })
 

@@ -6,6 +6,6 @@ export default interface IProject extends Document {
     date: string,
     mainImage: string,
     images: [
-        { image: string }
+        { imageUrl: string }
     ]
 }
