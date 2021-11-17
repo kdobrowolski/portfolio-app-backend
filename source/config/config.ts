@@ -22,10 +22,16 @@ const SERVER = {
     port: SERVER_PORT
 }
 
+const EMAIL = {
+    user: process.env.EMAIL,
+    password: process.env.EMAIL_PASSWORD
+}
+
 const config = {
     mongo: MONGO,
     server: SERVER,
-    token: TOKEN_KEY
+    token: TOKEN_KEY,
+    email: EMAIL
 }
 
 export default config;

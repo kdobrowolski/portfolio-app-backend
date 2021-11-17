@@ -3,6 +3,7 @@ import User from '../models/User';
 import mongoose from 'mongoose';
 import jwt, { Secret } from 'jsonwebtoken';
 import config from '../config/config';
+import nodemailer from 'nodemailer';
 
 const signIn = (req: Request, res: Response, next: NextFunction) => {
     const { login, password } = req.body;
@@ -78,4 +79,41 @@ const auth = (req: Request, res: Response, next: NextFunction) => {
     return res.status(200).json({"success": true});
 }
 
-export default { signIn, register, auth }
+const sendEmail = (req: Request, res: Response, next: NextFunction) => {
+    const { email, tel, title, msg } = req.body;
+
+    const transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true, 
+        auth: {
+          user: config.email.user,
+          pass: config.email.password
+        }
+      });
+      
+      const mailOptions = {
+        from: "kdobrowolski@official.com",
+        to: config.email.user,
+        subject: title,
+        html: `<p>Email: ${email}</p>
+               <p>Nr telefonu: ${tel}</p>
+               <p>${msg}</p>`
+      };
+      
+      transporter.sendMail(mailOptions, function(error: any, info: any){
+        if (error) {
+          res.status(500).json({
+              success: false,
+              error
+          })
+        } else {
+          res.status(200).json({
+              success: true,
+              message: "Email was sent!"
+          })
+        }
+      });
+}
+
+export default { signIn, register, auth, sendEmail }
