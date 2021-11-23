@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import Project from '../models/Project';
 import mongoose from 'mongoose';
+import * as fs from "fs";
 
 const getProjects = (req: Request, res: Response, next: NextFunction) => {
     Project.find({}, (err, data) => {
@@ -11,53 +12,73 @@ const getProjects = (req: Request, res: Response, next: NextFunction) => {
 }
 
 const newProject = (req: Request, res: Response, next: NextFunction) => {
-    const { title, description, date, mainImage } = req.body;
+    const { title, description, date } = req.body;
 
-    const project = new Project({
-        _id: new mongoose.Types.ObjectId(),
-        title,
-        description,
-        date,
-        mainImage,
-        images: []
-    })
-    
-    return project
-        .save()
-        .then((result) => {
-            return res.status(201).json({
-                success: true,
-                message: "Created new project"
-            })
+    if(req.file) {
+        const img = fs.readFileSync(req.file.path);
+        const encode_image = img.toString('base64');
+
+        var finalImage = {
+            image: Buffer.from(encode_image, 'base64')
+        };
+
+        const project = new Project({
+            _id: new mongoose.Types.ObjectId(),
+            title,
+            description,
+            date,
+            mainImage: finalImage.image,
+            images: []
         })
-        .catch((err) => {
-            return res.status(500).json({
-                message: err.message,
-                err
+        
+        return project
+            .save()
+            .then((result: any) => {
+                return res.status(201).json({
+                    success: true,
+                    message: "Created new project"
+                })
             })
-        })
+            .catch((err: any) => {
+                console.log(err);
+                return res.status(500).json({
+                    message: err.message,
+                    err
+                })
+            })
+    }
 }
 
 const editProject = (req: Request, res: Response, next: NextFunction) => {
     const { title, description, date, mainImage } = req.body;
     const id = req.params.id;
+    if(req.file) {
+        const img = fs.readFileSync(req.file.path);
+        const encode_image = img.toString('base64');
 
-    Project.updateOne({ _id: id } ,{ title, description, date, mainImage })
-        .then((result) => {
-            let count = result.matchedCount;
-            if(count == 0) return res.json({ success: false, message: "Project doesnt exists" });
+        var finalImage = {
+            image: Buffer.from(encode_image, 'base64')
+        };
+    
+        Project.updateOne({ _id: id } ,{ title, description, date, mainImage: finalImage.image })
+            .then((result) => {
+                let count = result.matchedCount;
+                if(count == 0) return res.json({ success: false, message: "Project doesnt exists" });
 
-            return res.status(200).json({
-                success: true,
-                message: "Updated!"
+
+                return res.status(200).json({
+                    success: true,
+                    message: "Updated!"
+                })
             })
-        })
-        .catch((err) => {
-            return res.status(500).json({
-                success: false,
-                err
+            .catch((err) => {
+                console.log({err: err});
+                return res.status(500).json({
+                    success: false,
+                    err
+                })
             })
-        })
+    }
 }
 
 const deleteProject = (req: Request, res: Response, next: NextFunction) => {

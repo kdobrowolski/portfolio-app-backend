@@ -15,7 +15,8 @@ const ProjectSchema: Schema = new Schema({
         required: true
     },
     mainImage: {
-        type: String,
+        type: Buffer,
+        contentType: String,
         required: true
     },
     images: [
@@ -25,4 +26,4 @@ const ProjectSchema: Schema = new Schema({
     ]
 }, { collection: "projects" })
 
-export default mongoose.model<IProject>('Project', ProjectSchema);
+export default mongoose.model('Project', ProjectSchema);
