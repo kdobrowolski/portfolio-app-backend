@@ -21,7 +21,7 @@ const ProjectSchema: Schema = new Schema({
     },
     images: [
         {
-            imageUrl: String
+            image: Buffer
         }
     ]
 }, { collection: "projects" })

@@ -21,7 +21,7 @@ router.put('/:id', upload.single('mainImage'), controller.editProject);
 router.delete('/:id', controller.deleteProject);
 
 router.get('/:id/images', controller.getImages);
-router.post('/:id/images', controller.addImage);
+router.post('/:id/images', upload.single('image'), controller.addImage);
 router.delete('/:id/images/:imageid', controller.deleteImage);
 
 export default router;

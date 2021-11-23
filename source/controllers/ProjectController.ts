@@ -120,25 +120,29 @@ const getImages = (req: Request, res: Response, next: NextFunction) => {
 
 const addImage = (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
-    const { imageUrl } = req.body;
+    console.log(req.file);
+    if(req.file) {
+        const img = fs.readFileSync(req.file.path);
+        const encode_image = img.toString('base64');
 
-    if(imageUrl == undefined || null) return res.status(500).json({ message: "image url is null or undefined", success: false })
-    if(imageUrl == "") return res.status(500).json({ message: "image url is empty", success: false })
+        var finalImage = {
+            image: Buffer.from(encode_image, 'base64')
+        };
 
-    Project.updateOne({ _id: id }, {$push: { images: { imageUrl: imageUrl } }})
-        .then((result) => {
-            return res.status(200).json({
-                success: true,
-                message: "Added image!",
+        Project.updateOne({ _id: id }, {$push: { images: { image: finalImage.image } }})
+            .then((result) => {
+                return res.status(200).json({
+                    success: true,
+                    message: "Added image!",
+                })
             })
-        })
-        .catch((err) => {
-            return res.status(500).json({
-                success: false,
-                err
+            .catch((err) => {
+                return res.status(500).json({
+                    success: false,
+                    err
+                })
             })
-        })
-
+    }
 }
 
 const deleteImage = (req: Request, res: Response, next: NextFunction) => {
