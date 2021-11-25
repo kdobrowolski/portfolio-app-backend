@@ -80,7 +80,7 @@ const auth = (req: Request, res: Response, next: NextFunction) => {
 }
 
 const sendEmail = (req: Request, res: Response, next: NextFunction) => {
-    const { email, tel, title, msg } = req.body;
+    const { email, tel, name, msg } = req.body;
 
     const transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
@@ -95,8 +95,9 @@ const sendEmail = (req: Request, res: Response, next: NextFunction) => {
       const mailOptions = {
         from: "kdobrowolski@official.com",
         to: config.email.user,
-        subject: title,
-        html: `<p>Email: ${email}</p>
+        subject: "Zapytanie z formularza - kdobrowolski.pl",
+        html: `<p>Imie i nazwisko: ${name}</p>
+               <p>Email: ${email}</p>
                <p>Nr telefonu: ${tel}</p>
                <p>${msg}</p>`
       };
